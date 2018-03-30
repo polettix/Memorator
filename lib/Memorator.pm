@@ -63,11 +63,6 @@ END
    return;
 } ## end sub _cleanup_alerts
 
-sub create {
-   my $package = shift;
-   return $package->new(@_)->initialize;
-}
-
 sub _ensure_table {
    my $self = shift;
    my $mdb   = __minion2db($self->minion);
@@ -86,11 +81,6 @@ END
    return $self;
 } ## end sub ensure_table
 
-sub initialize {
-   my ($self, $minion) = @_;
-   return $self->_ensure_table->_add_tasks;
-}
-
 sub _local_name {
    my ($self, $suffix) = @_;
    (my $retval = $self->name . '_' . $suffix) =~ s{\W}{_}gmxs;
@@ -103,6 +93,11 @@ sub __minion2db {
    (my $dbtech = ref $backend) =~ s{.*::}{}mxs;
    return $backend->can(lc($dbtech))->($backend);
 } ## end sub __minion2db
+
+sub new {
+   my $package = shift;
+   return $package->SUPER::new(@_)->_ensure_table->_add_tasks;
+}
 
 sub _process_alert {
    my ($self, $job, $eid) = @_;

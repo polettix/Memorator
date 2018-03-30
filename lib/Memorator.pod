@@ -126,23 +126,6 @@ The callback will be invoked like follows:
 where C<$identifier> is a meaningful identifier for your applications
 (which is also the identifier passed upon creation of the event).
 
-=head2 B<< create >>
-
-   my $obj = Memorator->create(%args);
-   my $obj = Memorator->create(\%args);
-
-wrapper around the constructor L</new>, calls L</initialize> as well as
-returning a new instance.
-
-=head2 B<< initialize >>
-
-   my $obj_itself = $obj->initialize;
-
-initialize an instance attaching to the L</minion> and ensuring that the
-right bits are in place (e.g. tables in the database).
-
-Returns the invoking object.
-
 =head2 B<< minion >>
 
    my $minion = $obj->minion;
@@ -167,12 +150,9 @@ Defaults to C<memorator>. Can be set in the constructor.
    my $obj = Memorator->new(%args);
    my $obj = Memorator->new(\%args);
 
-constructor. This does I<not> install tasks in L<Minion>, which needs
-L</initialize>. See L</create> for a constructor that I<does what you
-mean>.
-
-The recognized keys in C<%args> correspond to accessors
-L</alert_callback>, L</minion> and L</name>.
+constructor. The recognized keys in C<%args> correspond to accessors
+L</alert_callback> (mandatory), L</minion> (mandatory) and L</name>
+(optional).
 
 =head2 B<< set_alert >>
 
