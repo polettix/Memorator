@@ -226,13 +226,9 @@ L<Memorator::Util/local_name>.
 
 the basic suffix for the table name, i.e. the constant C<eid2jid>.
 
-=head1 BUGS AND LIMITATIONS
-
-Report bugs through GitHub (patches welcome).
-
 =head1 SEE ALSO
 
-L<Minion>.
+L<Memorator>.
 
 =head1 AUTHOR
 
