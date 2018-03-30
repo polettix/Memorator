@@ -47,40 +47,6 @@ DISTRIBUTIONS
       IO::Socket 0
       Socket 1.97
       Test::More 0.88
-  Log-Any-1.705
-    pathname: P/PR/PREACTION/Log-Any-1.705.tar.gz
-    provides:
-      Log::Any 1.705
-      Log::Any::Adapter 1.705
-      Log::Any::Adapter::Base 1.705
-      Log::Any::Adapter::File 1.705
-      Log::Any::Adapter::Null 1.705
-      Log::Any::Adapter::Stderr 1.705
-      Log::Any::Adapter::Stdout 1.705
-      Log::Any::Adapter::Syslog 1.705
-      Log::Any::Adapter::Test 1.705
-      Log::Any::Adapter::Util 1.705
-      Log::Any::Manager 1.705
-      Log::Any::Proxy 1.705
-      Log::Any::Proxy::Null 1.705
-      Log::Any::Proxy::Test 1.705
-      Log::Any::Test 1.705
-    requirements:
-      B 0
-      Carp 0
-      Data::Dumper 0
-      Exporter 0
-      ExtUtils::MakeMaker 0
-      Fcntl 0
-      File::Basename 0
-      FindBin 0
-      IO::File 0
-      Storable 0
-      Sys::Syslog 0
-      Test::Builder 0
-      constant 0
-      strict 0
-      warnings 0
   Minion-8.12
     pathname: S/SR/SRI/Minion-8.12.tar.gz
     provides:
