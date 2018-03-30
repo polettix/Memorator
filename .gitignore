@@ -1,0 +1,5 @@
+.build/
+*.swp
+/local/
+/Memorator-*.tar.gz
+/Memorator-*/
