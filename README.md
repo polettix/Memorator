@@ -1,6 +1,6 @@
 # NAME
 
-Memorator - \[ a brief description of the distribution \]
+Memorator - Remind of events via Minion
 
 # VERSION
 
@@ -8,29 +8,68 @@ This document describes Memorator version {{\[ version \]}}.
 
 # SYNOPSIS
 
+    use Minion;
+    my $minion = Minion->new(...);
+
     use Memorator;
+    my $memorator = Memorator->create(
+       alert_callback => sub {
+          my $id = shift;
+          print "notification for id <$id>\n";
+          return;
+       }
+       minion => $minion,
+       name => 'memorator', # this is the default
+    );
+
+    $minion->enqueue(memorator_process_update =>
+       {
+          eid => 'id-001',      # identifier meaningful for you
+          epoch => (time + 30), # when you want the alert
+          attempts => 5,        # how many retries before giving up
+       }
+    );
 
 # DESCRIPTION
 
-This module allows you to...
+This module allows you to set alerts for some events you need to be warned
+of. It's as simple as asking an alarm to ring at a certain date/time.
 
-# FUNCTIONS
+The module leverages on [Minion](https://metacpan.org/pod/Minion) for the heavylifting. It's actually
+a thin API on top of it, installing two _tasks_ which by default go under
+the names `memorator_process_update` and `memorator_process_alert`
+(although you can change the `memorator` part using ["name"](#name)).
 
-## **whatever**
+The interaction model is simple:
+
+- you create an object with an ["alert\_callback"](#alert_callback) and a `minion` object
+that will do the hard work. The ["alert\_callback"](#alert_callback) is where you will
+implement your logic for when the alert expires;
+- you enqueue _updates_ to set new alarms or modify existing ones, based on
+an _identifier_ that is meaningful for you;
+- at the expiration of the alarm time, the ["alert\_callback"](#alert_callback) is called with
+the specific _identifier_, so that you can figure out what has to be done
+next.
+
+To add a new reminder, or change an existing one, you use
+`memorator_process_update` passing a hash reference like this:
+
+    $minion->enqueue(memorator_process_update =>
+       {
+          eid => 'id-001',      # identifier meaningful for you
+          epoch => (time + 30), # when you want the alert
+          attempts => 5,        # how many retries before giving up
+       }
+    );
+
+You can also set alerts directly, without the mediation of [Minion](https://metacpan.org/pod/Minion),
+using ["set\_alert"](#set_alert):
+
+    $memorator->set_alert(\%same_hashref_as_before);
+
+See ["set\_alert"](#set_alert) for the allowed keys.
 
 # METHODS
-
-## **add\_tasks**
-
-    my $obj_itself = $obj->add_tasks($minion);
-
-add tasks to [Minion](https://metacpan.org/pod/Minion) for processing incoming updates and firing up
-alerts. The name of the added tasks is generated using ["local\_name"](#local_name) over
-strings `process_alert` and `process_update`.
-
-Returns the invoking object.
-
-It is called automatically by ["initialize"](#initialize).
 
 ## **alert\_callback**
 
@@ -41,48 +80,87 @@ accessor for the callback to be run when an alert has to be sent. It is
 mandatory to set this before the first alert is sent. Can be set in the
 constructor.
 
-## **ensure\_table**
+The callback will be invoked like follows:
 
-    my $obj_itself = $obj->ensure_table($minion);
+    $callback->($identifier);
 
-ensure that there are the needed tables in the same database as
-`$minion`. Support for different backends might need some tweaking over
-time because of differences in how to define tables in different database
-technologies, please report any deficiencies in this area. In initial
-releases, it should be compatible with SQLite and Postgresql.
+where `$identifier` is a meaningful identifier for your applications
+(which is also the identifier passed upon creation of the event).
+
+## **create**
+
+    my $obj = Memorator->create(%args);
+    my $obj = Memorator->create(\%args);
+
+wrapper around the constructor ["new"](#new), calls ["initialize"](#initialize) as well as
+returning a new instance.
 
 ## **initialize**
 
-    my $obj_itself = $obj->initialize($minion);
+    my $obj_itself = $obj->initialize;
 
-initialize an instance attaching to a [Minion](https://metacpan.org/pod/Minion). This method makes sure to
-create the needed tables via ["ensure\_table"](#ensure_table) and to register tasks in
-`$minion` using ["add\_tasks"](#add_tasks).
+initialize an instance attaching to the ["minion"](#minion) and ensuring that the
+right bits are in place (e.g. tables in the database).
 
 Returns the invoking object.
 
-## **local\_name**
+## **minion**
 
-    my $ln = $obj->local_name($suffix);
+    my $minion = $obj->minion;
+    $obj->minion($minion_instance);
 
-generate a _local name_ by joining ["name"](#name) and the provided `$suffix`
-with an underscore character, then turning all non-word characters in the
-result to underscores. For example, if ["name"](#name) is `What-Ever` and the
-provided `$suffix` is `you do`, the result would be `What_Ever_you_do`.
-
-It is also used to generate the name of the table for mappings, by
-localizing name `eid2jid` (which stands for _external identifier to job
-identifier_).
+accessor for the [Minion](https://metacpan.org/pod/Minion) used behind the scenes. Note that in callbacks
+called in jobs the minion instance will be drawn from the jobs themselves,
+as it might prove to be _fresher_.
 
 ## **name**
 
     my $name = $obj->name;
     $obj->name($new_name);
 
-accessor for a name for generating local names with ["local\_name"](#local_name). This
-allows you to have more instances living inside the same [Minion](https://metacpan.org/pod/Minion), should
-you ever need to do this. Defaults to `memorator`. Can be set in the
-constructor.
+accessor for a name for generating local names of tables in the database,
+as well as task names in [Minion](https://metacpan.org/pod/Minion). This allows you to have more instances
+living inside the same [Minion](https://metacpan.org/pod/Minion), should you ever need to do this.
+Defaults to `memorator`. Can be set in the constructor.
+
+## **new**
+
+    my $obj = Memorator->new(%args);
+    my $obj = Memorator->new(\%args);
+
+constructor. This does _not_ install tasks in [Minion](https://metacpan.org/pod/Minion), which needs
+["initialize"](#initialize). See ["create"](#create) for a constructor that _does what you
+mean_.
+
+The recognized keys in `%args` correspond to accessors
+["alert\_callback"](#alert_callback), ["minion"](#minion) and ["name"](#name).
+
+## **set\_alert**
+
+    $obj->set_alert(\%hashref);
+
+Set an alert. The following keys are supported:
+
+- `attempts`
+
+    how many times [Minion](https://metacpan.org/pod/Minion) will retry upon failure of your callback. In this
+    case, _failure_ means _thrown exception_.
+
+- `epoch`
+
+    the UTC epoch at which you want the alert callback to be triggered.
+
+- `id`
+
+    the [identifier](https://metacpan.org/pod/identifier) for your event, which can help you retrieve the details
+    of your event somewhere else. It has a textual form, so you might want to
+    abuse it to store more data (e.g. some JSON data); just keep in mind that
+    it is treated as an _opaque identifier_, i.e. a string that is compared
+    to other strings for equality.
+
+You don't need to call this directly if you use [Minion](https://metacpan.org/pod/Minion) for enqueuing
+alerts via `memorator_process_update` (or whatever name the task has,
+based on ["name"](#name)).
 
 # BUGS AND LIMITATIONS
 
@@ -90,7 +168,7 @@ Report bugs through GitHub (patches welcome).
 
 # SEE ALSO
 
-Foo::Bar.
+[Minion](https://metacpan.org/pod/Minion).
 
 # AUTHOR
 
