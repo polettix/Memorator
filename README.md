@@ -6,6 +6,27 @@ Memorator - Remind of events via Minion
 
 This document describes Memorator version {{\[ version \]}}.
 
+<div>
+    <a href="https://travis-ci.org/polettix/Memorator">
+    <img alt="Build Status" src="https://travis-ci.org/polettix/Memorator.svg?branch=master">
+    </a>
+    <a href="https://www.perl.org/">
+    <img alt="Perl Version" src="https://img.shields.io/badge/perl-5.10+-brightgreen.svg">
+    </a>
+    <a href="https://badge.fury.io/pl/Memorator">
+    <img alt="Current CPAN version" src="https://badge.fury.io/pl/Memorator.svg">
+    </a>
+    <a href="http://cpants.cpanauthors.org/dist/Memorator">
+    <img alt="Kwalitee" src="http://cpants.cpanauthors.org/dist/Memorator.png">
+    </a>
+    <a href="http://www.cpantesters.org/distro/M/Memorator.html?distmat=1">
+    <img alt="CPAN Testers" src="https://img.shields.io/badge/cpan-testers-blue.svg">
+    </a>
+    <a href="http://matrix.cpantesters.org/?dist=Memorator">
+    <img alt="CPAN Testers Matrix" src="https://img.shields.io/badge/matrix-@testers-blue.svg">
+    </a>
+</div>
+
 # SYNOPSIS
 
     use Minion;
