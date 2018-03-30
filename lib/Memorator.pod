@@ -27,12 +27,74 @@ This module allows you to...
 
 =head1 METHODS
 
-=head2 B<< whatever >>
+=head2 B<< add_tasks >>
+
+   my $obj_itself = $obj->add_tasks($minion);
+
+add tasks to L<Minion> for processing incoming updates and firing up
+alerts. The name of the added tasks is generated using L</local_name> over
+strings C<process_alert> and C<process_update>.
+
+Returns the invoking object.
+
+It is called automatically by L</initialize>.
+
+=head2 B<< alert_callback >>
+
+   my $sub_reference = $obj->alert_callback;
+   $obj->alert_callback(sub {...});
+
+accessor for the callback to be run when an alert has to be sent. It is
+mandatory to set this before the first alert is sent. Can be set in the
+constructor.
+
+=head2 B<< ensure_table >>
+
+   my $obj_itself = $obj->ensure_table($minion);
+
+ensure that there are the needed tables in the same database as
+C<$minion>. Support for different backends might need some tweaking over
+time because of differences in how to define tables in different database
+technologies, please report any deficiencies in this area. In initial
+releases, it should be compatible with SQLite and Postgresql.
+
+=head2 B<< initialize >>
+
+   my $obj_itself = $obj->initialize($minion);
+
+initialize an instance attaching to a L<Minion>. This method makes sure to
+create the needed tables via L</ensure_table> and to register tasks in
+C<$minion> using L</add_tasks>.
+
+Returns the invoking object.
+
+=head2 B<< local_name >>
+
+   my $ln = $obj->local_name($suffix);
+
+generate a I<local name> by joining L</name> and the provided C<$suffix>
+with an underscore character, then turning all non-word characters in the
+result to underscores. For example, if L</name> is C<What-Ever> and the
+provided C<$suffix> is C<you do>, the result would be C<What_Ever_you_do>.
+
+It is also used to generate the name of the table for mappings, by
+localizing name C<eid2jid> (which stands for I<external identifier to job
+identifier>).
+
+=head2 B<< name >>
+
+   my $name = $obj->name;
+   $obj->name($new_name);
+
+accessor for a name for generating local names with L</local_name>. This
+allows you to have more instances living inside the same L<Minion>, should
+you ever need to do this. Defaults to C<memorator>. Can be set in the
+constructor.
 
 
 =head1 BUGS AND LIMITATIONS
 
-Report bugs either through RT or GitHub (patches welcome).
+Report bugs through GitHub (patches welcome).
 
 =head1 SEE ALSO
 
