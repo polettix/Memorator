@@ -51,7 +51,7 @@ This document describes Memorator version {{[ version ]}}.
 
    $minion->enqueue(memorator_process_update =>
       {
-         eid => 'id-001',      # identifier meaningful for you
+         id => 'id-001',       # identifier meaningful for you
          epoch => (time + 30), # when you want the alert
          attempts => 5,        # how many retries before giving up
       }
