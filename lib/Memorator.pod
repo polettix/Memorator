@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-Memorator - [ a brief description of the distribution ]
+Memorator - Remind of events via Minion
 
 =head1 VERSION
 
@@ -12,32 +12,80 @@ This document describes Memorator version {{[ version ]}}.
 
 =head1 SYNOPSIS
 
-   use Memorator;
+   use Minion;
+   my $minion = Minion->new(...);
 
+   use Memorator;
+   my $memorator = Memorator->create(
+      alert_callback => sub {
+         my $id = shift;
+         print "notification for id <$id>\n";
+         return;
+      }
+      minion => $minion,
+      name => 'memorator', # this is the default
+   );
+
+   $minion->enqueue(memorator_process_update =>
+      {
+         eid => 'id-001',      # identifier meaningful for you
+         epoch => (time + 30), # when you want the alert
+         attempts => 5,        # how many retries before giving up
+      }
+   );
 
 =head1 DESCRIPTION
 
-This module allows you to...
+This module allows you to set alerts for some events you need to be warned
+of. It's as simple as asking an alarm to ring at a certain date/time.
 
-=head1 FUNCTIONS
+The module leverages on L<Minion> for the heavylifting. It's actually
+a thin API on top of it, installing two I<tasks> which by default go under
+the names C<memorator_process_update> and C<memorator_process_alert>
+(although you can change the C<memorator> part using L</name>).
 
-=head2 B<< whatever >>
+The interaction model is simple:
 
+=over
 
+=item *
+
+you create an object with an L</alert_callback> and a C<minion> object
+that will do the hard work. The L</alert_callback> is where you will
+implement your logic for when the alert expires;
+
+=item *
+
+you enqueue I<updates> to set new alarms or modify existing ones, based on
+an I<identifier> that is meaningful for you;
+
+=item *
+
+at the expiration of the alarm time, the L</alert_callback> is called with
+the specific I<identifier>, so that you can figure out what has to be done
+next.
+
+=back
+
+To add a new reminder, or change an existing one, you use
+C<memorator_process_update> passing a hash reference like this:
+
+   $minion->enqueue(memorator_process_update =>
+      {
+         eid => 'id-001',      # identifier meaningful for you
+         epoch => (time + 30), # when you want the alert
+         attempts => 5,        # how many retries before giving up
+      }
+   );
+
+You can also set alerts directly, without the mediation of L<Minion>,
+using L</set_alert>:
+
+   $memorator->set_alert(\%same_hashref_as_before);
+
+See L</set_alert> for the allowed keys.
 
 =head1 METHODS
-
-=head2 B<< add_tasks >>
-
-   my $obj_itself = $obj->add_tasks($minion);
-
-add tasks to L<Minion> for processing incoming updates and firing up
-alerts. The name of the added tasks is generated using L</local_name> over
-strings C<process_alert> and C<process_update>.
-
-Returns the invoking object.
-
-It is called automatically by L</initialize>.
 
 =head2 B<< alert_callback >>
 
@@ -48,48 +96,91 @@ accessor for the callback to be run when an alert has to be sent. It is
 mandatory to set this before the first alert is sent. Can be set in the
 constructor.
 
-=head2 B<< ensure_table >>
+The callback will be invoked like follows:
 
-   my $obj_itself = $obj->ensure_table($minion);
+   $callback->($identifier);
 
-ensure that there are the needed tables in the same database as
-C<$minion>. Support for different backends might need some tweaking over
-time because of differences in how to define tables in different database
-technologies, please report any deficiencies in this area. In initial
-releases, it should be compatible with SQLite and Postgresql.
+where C<$identifier> is a meaningful identifier for your applications
+(which is also the identifier passed upon creation of the event).
+
+=head2 B<< create >>
+
+   my $obj = Memorator->create(%args);
+   my $obj = Memorator->create(\%args);
+
+wrapper around the constructor L</new>, calls L</initialize> as well as
+returning a new instance.
 
 =head2 B<< initialize >>
 
-   my $obj_itself = $obj->initialize($minion);
+   my $obj_itself = $obj->initialize;
 
-initialize an instance attaching to a L<Minion>. This method makes sure to
-create the needed tables via L</ensure_table> and to register tasks in
-C<$minion> using L</add_tasks>.
+initialize an instance attaching to the L</minion> and ensuring that the
+right bits are in place (e.g. tables in the database).
 
 Returns the invoking object.
 
-=head2 B<< local_name >>
+=head2 B<< minion >>
 
-   my $ln = $obj->local_name($suffix);
+   my $minion = $obj->minion;
+   $obj->minion($minion_instance);
 
-generate a I<local name> by joining L</name> and the provided C<$suffix>
-with an underscore character, then turning all non-word characters in the
-result to underscores. For example, if L</name> is C<What-Ever> and the
-provided C<$suffix> is C<you do>, the result would be C<What_Ever_you_do>.
-
-It is also used to generate the name of the table for mappings, by
-localizing name C<eid2jid> (which stands for I<external identifier to job
-identifier>).
+accessor for the L<Minion> used behind the scenes. Note that in callbacks
+called in jobs the minion instance will be drawn from the jobs themselves,
+as it might prove to be I<fresher>.
 
 =head2 B<< name >>
 
    my $name = $obj->name;
    $obj->name($new_name);
 
-accessor for a name for generating local names with L</local_name>. This
-allows you to have more instances living inside the same L<Minion>, should
-you ever need to do this. Defaults to C<memorator>. Can be set in the
-constructor.
+accessor for a name for generating local names of tables in the database,
+as well as task names in L<Minion>. This allows you to have more instances
+living inside the same L<Minion>, should you ever need to do this.
+Defaults to C<memorator>. Can be set in the constructor.
+
+=head2 B<< new >>
+
+   my $obj = Memorator->new(%args);
+   my $obj = Memorator->new(\%args);
+
+constructor. This does I<not> install tasks in L<Minion>, which needs
+L</initialize>. See L</create> for a constructor that I<does what you
+mean>.
+
+The recognized keys in C<%args> correspond to accessors
+L</alert_callback>, L</minion> and L</name>.
+
+=head2 B<< set_alert >>
+
+   $obj->set_alert(\%hashref);
+
+Set an alert. The following keys are supported:
+
+=over
+
+=item C<attempts>
+
+how many times L<Minion> will retry upon failure of your callback. In this
+case, I<failure> means I<thrown exception>.
+
+=item C<epoch>
+
+the UTC epoch at which you want the alert callback to be triggered.
+
+=item C<id>
+
+the L<identifier> for your event, which can help you retrieve the details
+of your event somewhere else. It has a textual form, so you might want to
+abuse it to store more data (e.g. some JSON data); just keep in mind that
+it is treated as an I<opaque identifier>, i.e. a string that is compared
+to other strings for equality.
+
+=back
+
+You don't need to call this directly if you use L<Minion> for enqueuing
+alerts via C<memorator_process_update> (or whatever name the task has,
+based on L</name>).
 
 
 =head1 BUGS AND LIMITATIONS
@@ -98,7 +189,7 @@ Report bugs through GitHub (patches welcome).
 
 =head1 SEE ALSO
 
-Foo::Bar.
+L<Minion>.
 
 =head1 AUTHOR
 
