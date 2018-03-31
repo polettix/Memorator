@@ -233,6 +233,19 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Mojolicious 7.56
+  Minion-Backend-SQLite-3.003
+    pathname: D/DB/DBOOK/Minion-Backend-SQLite-3.003.tar.gz
+    provides:
+      Minion::Backend::SQLite 3.003
+    requirements:
+      List::Util 0
+      Minion 8.0
+      Module::Build::Tiny 0.034
+      Mojo::SQLite 3.000
+      Mojolicious 7.29
+      Sys::Hostname 0
+      Time::HiRes 0
+      perl 5.010001
   Module-Build-0.4224
     pathname: L/LE/LEONT/Module-Build-0.4224.tar.gz
     provides:
