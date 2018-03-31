@@ -1,5 +1,6 @@
 requires 'perl', '5.010';
 requires 'Minion', '8.0';
+requires 'Module::Runtime', '0.014';
 requires 'Try::Tiny', '0.30';
 
 on test => sub {
