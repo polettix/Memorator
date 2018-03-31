@@ -58,8 +58,40 @@ following one.
    my $text = $obj->migration;
 
 get the text suitable to create the database table(s) via
-L<Mojo::SQLite/migrations>. It relies upon L<Memorator::Backend/table_name> to
-set the name of the table to be created.
+L<Mojo::SQLite/migrations>. It relies upon
+L<Memorator::Backend/table_name> to set the name of the table to be
+created.
+
+=begin TRICK
+
+These methods are inherited from L<Memorator::Backend>, but for some
+reason Test::Pod::Coverage complains about missing documentation for them.
+
+=over
+
+=item add_mapping
+
+=item deactivate_mapping
+
+=item deactivate_mapping_query
+
+=item ensure_table
+
+=item mapping_between
+
+=item mapping_between_query
+
+=item remove_mapping
+
+=item stale_mappings
+
+=item stale_mappings_query
+
+=item table_name
+
+=back
+
+=end TRICK
 
 =head1 SEE ALSO
 
