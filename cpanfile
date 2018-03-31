@@ -11,4 +11,5 @@ on test => sub {
 on develop => sub {
    requires 'Path::Tiny',        '0.096';
    requires 'Template::Perlish', '1.52';
+   requires 'Mojo::SQLite',      '3.000';
 };
