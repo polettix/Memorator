@@ -158,7 +158,8 @@ Set an alert. The following keys are supported:
 
 - `epoch`
 
-    the UTC epoch at which you want the alert callback to be triggered.
+    the UTC epoch at which you want the alert callback to be triggered. If
+    this field is missing, the alert will be _removed_.
 
 - `id`
 

@@ -112,20 +112,26 @@ sub set_alert {
    my ($eid, $epoch, $attempts) = @{$alert}{qw< id epoch attempts >};
    $attempts //= ATTEMPTS;
 
-   my $now = time;
-   my $delay = ($epoch > $now) ? ($epoch - $now) : 0;
+   if (defined $epoch) {
+      my $now = time;
+      my $delay = ($epoch > $now) ? ($epoch - $now) : 0;
 
-   my $task = $self->_local_name(PROCESS_ALERT);
-   $minion->app->log->debug("enqueuing $task in ${delay}s");
-   my $jid = $minion->enqueue(
-      $task => [$eid],
-      {delay => $delay, attempts => $attempts}
-   );
+      my $task = $self->_local_name(PROCESS_ALERT);
+      $minion->app->log->debug("enqueuing $task in ${delay}s");
+      my $jid = $minion->enqueue(
+         $task => [$eid],
+         {delay => $delay, attempts => $attempts}
+      );
 
-   # record for future mapping and cleanup stuff
-   $self->backend->add_mapping($eid, $jid);
+      # record for future mapping
+      $self->backend->add_mapping($eid, $jid);
+   }
+   else { # remove alert
+      $self->backend->remove_mapping($eid);
+   }
+
+   # whatever happened, cleanup
    $self->_cleanup_alerts($minion);    # never fails
-
    return $self;
 } ## end sub set_alert
 

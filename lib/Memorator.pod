@@ -178,7 +178,8 @@ case, I<failure> means I<thrown exception>.
 
 =item C<epoch>
 
-the UTC epoch at which you want the alert callback to be triggered.
+the UTC epoch at which you want the alert callback to be triggered. If
+this field is missing, the alert will be I<removed>.
 
 =item C<id>
 
