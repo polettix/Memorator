@@ -108,23 +108,6 @@ The callback will be invoked like follows:
 where `$identifier` is a meaningful identifier for your applications
 (which is also the identifier passed upon creation of the event).
 
-## **create**
-
-    my $obj = Memorator->create(%args);
-    my $obj = Memorator->create(\%args);
-
-wrapper around the constructor ["new"](#new), calls ["initialize"](#initialize) as well as
-returning a new instance.
-
-## **initialize**
-
-    my $obj_itself = $obj->initialize;
-
-initialize an instance attaching to the ["minion"](#minion) and ensuring that the
-right bits are in place (e.g. tables in the database).
-
-Returns the invoking object.
-
 ## **minion**
 
     my $minion = $obj->minion;
@@ -149,12 +132,9 @@ Defaults to `memorator`. Can be set in the constructor.
     my $obj = Memorator->new(%args);
     my $obj = Memorator->new(\%args);
 
-constructor. This does _not_ install tasks in [Minion](https://metacpan.org/pod/Minion), which needs
-["initialize"](#initialize). See ["create"](#create) for a constructor that _does what you
-mean_.
-
-The recognized keys in `%args` correspond to accessors
-["alert\_callback"](#alert_callback), ["minion"](#minion) and ["name"](#name).
+constructor. The recognized keys in `%args` correspond to accessors
+["alert\_callback"](#alert_callback) (mandatory), ["minion"](#minion) (mandatory) and ["name"](#name)
+(optional).
 
 ## **set\_alert**
 
