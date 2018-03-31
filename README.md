@@ -136,6 +136,15 @@ constructor. The recognized keys in `%args` correspond to accessors
 ["alert\_callback"](#alert_callback) (mandatory), ["minion"](#minion) (mandatory) and ["name"](#name)
 (optional).
 
+## **remove\_alert**
+
+    $obj->remove_alert(\%hashref); # OR
+    $obj->remove_alert($eid);
+
+remove an alert. You can pass either a hash reference compatible with
+["set\_alert"](#set_alert), or the external identifier for which you don't need the
+alert any more. Returns nothing.
+
 ## **set\_alert**
 
     $obj->set_alert(\%hashref);

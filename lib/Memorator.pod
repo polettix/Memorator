@@ -154,6 +154,15 @@ constructor. The recognized keys in C<%args> correspond to accessors
 L</alert_callback> (mandatory), L</minion> (mandatory) and L</name>
 (optional).
 
+=head2 B<< remove_alert >>
+
+   $obj->remove_alert(\%hashref); # OR
+   $obj->remove_alert($eid);
+
+remove an alert. You can pass either a hash reference compatible with
+L</set_alert>, or the external identifier for which you don't need the
+alert any more. Returns nothing.
+
 =head2 B<< set_alert >>
 
    $obj->set_alert(\%hashref);

@@ -20,6 +20,7 @@ has name           => 'memorator';
 
 sub _cleanup_alerts {
    my ($self, $minion) = @_;
+   $minion //= $self->minion;
 
    my $backend = $self->backend;
    my $log     = $minion->app->log;
@@ -96,6 +97,13 @@ sub _process_alert {
 sub _process_update {
    my ($self, $job, $alert) = @_;
    return $self->set_alert($alert, $job->minion);
+}
+
+sub remove_alert {
+   my ($self, $id, $minion) = @_;
+   $self->backend->remove_mapping(ref($id) ? $id->{id} : $id);
+   $self->_cleanup_alerts($minion);
+   return;
 }
 
 sub set_alert {
