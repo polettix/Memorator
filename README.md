@@ -38,7 +38,7 @@ This document describes Memorator version {{\[ version \]}}.
           my $id = shift;
           print "notification for id <$id>\n";
           return;
-       }
+       },
        minion => $minion,
        name => 'memorator', # this is the default
     );
