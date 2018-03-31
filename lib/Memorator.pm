@@ -51,7 +51,7 @@ sub _minion2backend {
    (my $dbtech = ref $mb) =~ s{.*::}{}mxs;
    my $mdb       = $mb->can(lc($dbtech))->($mb);
    my $classname = __PACKAGE__ . '::Backend::' . ref($mdb);
-   return use_module($classname)->new(mojodb => $mdb);
+   return use_module($classname)->new(mojodb => $mdb, name => $self->name);
 } ## end sub _minion2backend
 
 sub _local_name {
