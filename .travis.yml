@@ -14,4 +14,4 @@ before_install:
   - source ~/travis-perl-helpers/init
   - build-perl
   - perl -V
-  - cpanm Minion::Backend::SQLite
+  - cpanm -n Minion::Backend::SQLite
