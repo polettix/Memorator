@@ -40,6 +40,7 @@
       "runtime" : {
          "requires" : {
             "Minion" : "8.0",
+            "Module::Runtime" : "0.014",
             "Try::Tiny" : "0.30",
             "perl" : "5.010"
          }
