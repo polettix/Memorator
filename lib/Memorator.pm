@@ -30,8 +30,13 @@ sub _cleanup_alerts {
 
    for my $stale (@stales) {
       my ($id, $eid, $jid) = @{$stale}{qw< id eid jid >};
+      if (! defined $id) {
+         $log->error('found stale with undefined id...');
+         next;
+      }
       try {
-         $log->info("removing superseded job '$jid'");
+         my $log_jid = defined($jid) ? $jid : '*undef*';
+         $log->info("removing superseded job '$log_jid'");
          $backend->remove_mapping($id);
          if (my $job = $minion->job($jid)) {
             $job->remove
