@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.004  2018-04-02 22:42:30 CEST
+   - try to fix some races in tests
+
 0.002  2018-04-02 10:42:26 CEST
    - add method remove_alert()
    - extended method set_alert() to also remove alerts

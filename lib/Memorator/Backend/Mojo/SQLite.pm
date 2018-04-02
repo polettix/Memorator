@@ -1,7 +1,7 @@
 package Memorator::Backend::Mojo::SQLite;
 use strict;
 use warnings;
-{ our $VERSION = '0.002'; }
+{ our $VERSION = '0.004'; }
 
 use Mojo::Base 'Memorator::Backend';
 
