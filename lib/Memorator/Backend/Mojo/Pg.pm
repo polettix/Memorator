@@ -1,7 +1,7 @@
 package Memorator::Backend::Mojo::Pg;
 use strict;
 use warnings;
-{ our $VERSION = '0.001'; }
+{ our $VERSION = '0.002'; }
 
 use Mojo::Base 'Memorator::Backend';
 

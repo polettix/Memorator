@@ -1,7 +1,7 @@
 package Memorator::Util;
 use strict;
 use warnings;
-{ our $VERSION = '0.001'; }
+{ our $VERSION = '0.002'; }
 
 use Exporter qw< import >;
 our @EXPORT_OK = qw< local_name >;
