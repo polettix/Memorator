@@ -32,11 +32,11 @@ sub _cleanup_alerts {
       my ($id, $eid, $jid) = @{$stale}{qw< id eid jid >};
       try {
          $log->info("removing superseded job '$jid'");
+         $backend->remove_mapping($id);
          if (my $job = $minion->job($jid)) {
             $job->remove
               if $job->info->{state} =~ m{\A(?: active | inactive )\z}mxs;
          }
-         $backend->remove_mapping($id);
       } ## end try
       catch {
          $log->error("cleanup of id<$id>/eid<$eid>/jid<$jid> error: $_");
