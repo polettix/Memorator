@@ -53,6 +53,14 @@ This document describes Memorator version {{\[ version \]}}.
 
 # DESCRIPTION
 
+> - _**memorātor**_
+>     - imperative passive future of verb _memorāre_, can be translated like
+>     _you will be reminded_ (see [https://en.wiktionary.org/wiki/memoro](https://en.wiktionary.org/wiki/memoro),
+>     expand section on _Inflection_).
+>     - nominative singular of _memorātor_, male third descension, can be
+>     translated like _someone who mentions_ (see
+>     [https://en.wiktionary.org/wiki/memorator](https://en.wiktionary.org/wiki/memorator))
+
 This module allows you to set alerts for some events you need to be warned
 of. It's as simple as asking an alarm to ring at a certain date/time.
 
