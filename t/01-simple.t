@@ -43,45 +43,59 @@ is_deeply [sort { $a cmp $b } keys %$tasks],
 }
 
 {
+   my $time = time;
    ok eval {
-      $memorator->set_alert({id => 'ever', epoch => (time + 1)});
+      $memorator->set_alert({id => 'ever', epoch => ($time + 2)});
       return 1;
    }, 'set_alert lives';
    ok eval {
       $minion->enqueue(
-         memorator_process_update => [{id => 'what', epoch => (time - 1)}]
+         memorator_process_update => [{id => 'what', epoch => ($time - 1)}]
       );
       return 1;
    }, 'enqueue lives';
 
    $minion->perform_jobs;
-   is_deeply [$testfile->lines], [qw< what >], 'notification 1';
+   my $after_time = time;
+   SKIP: {
+      skip 'platform seems a bit slow', 2
+        if $after_time >= $time + 2;
 
-   diag "wait 2 seconds...";
-   sleep 2;
-   $minion->perform_jobs;
-   is_deeply [$testfile->lines], [qw< whatever >], 'notification 2';
+      is_deeply [$testfile->lines], [qw< what >], 'notification 1';
+
+      diag "wait 2 seconds...";
+      sleep 2;
+      $minion->perform_jobs;
+      is_deeply [$testfile->lines], [qw< whatever >], 'notification 2';
+   };
 
    $testfile->remove;
 }
 
 {
+   my $time = time;
    ok eval {
-      $memorator->set_alert({id => 'whatever', epoch => (time + 1)});
+      $memorator->set_alert({id => 'whatever', epoch => ($time + 2)});
       return 1;
    }, 'set_alert lives, but will be overridden';
    ok eval {
-      $memorator->set_alert({id => 'whatever', epoch => (time - 1)});
+      $memorator->set_alert({id => 'whatever', epoch => ($time - 1)});
       return 1;
    }, 'set_alert lives, setting for immediate action';
 
    $minion->perform_jobs;
-   is_deeply [$testfile->lines], [qw< whatever >], 'notification 1';
+   my $after_time = time;
+   SKIP: {
+      skip 'platform seems a bit slow', 2
+        if $after_time >= $time + 2;
 
-   diag "wait 2 seconds...";
-   sleep 2;
-   $minion->perform_jobs;
-   is_deeply [$testfile->lines], [qw< whatever >], 'no new notification';
+      is_deeply [$testfile->lines], [qw< whatever >], 'notification A';
+
+      diag "wait 2 seconds...";
+      sleep 2;
+      $minion->perform_jobs;
+      is_deeply [$testfile->lines], [qw< whatever >], 'no new notification';
+   }
 
    $testfile->remove;
 }
