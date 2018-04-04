@@ -55,7 +55,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/polettix/Memorator/issues"
@@ -67,7 +67,7 @@
          "web" : "https://github.com/polettix/Memorator"
       }
    },
-   "version" : "0.005001",
+   "version" : "0.006",
    "x_contributors" : [
       "Flavio Poletti <flavio@polettix.it>"
    ],

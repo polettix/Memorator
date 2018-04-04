@@ -1,7 +1,7 @@
 package Memorator::Backend::Mojo::SQLite;
 use strict;
 use warnings;
-{ our $VERSION = '0.005001'; }
+{ our $VERSION = '0.006'; }
 
 use Memorator::Util ();
 use constant TABLE_NAME => 'eid2jid';
