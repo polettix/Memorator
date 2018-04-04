@@ -2,7 +2,12 @@ use strict;
 use Test::More;
 
 BEGIN {
-   eval 'use Minion::Backend::SQLite; 1'
+   my $ensure_modules = <<'END';
+use DBD::SQLite 1.58;
+use Minion::Backend::SQLite 3.003;
+1;
+END
+   eval $ensure_modules
      or plan skip_all => 'Minion::Backend::SQLite required for tests';
 }
 
