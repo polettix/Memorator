@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.005001  2018-04-04 08:12:18 CEST
+   - stricter pre-requirements for 01-simple.t
+
 0.004  2018-04-02 22:42:30 CEST
    - try to fix some races in tests
 

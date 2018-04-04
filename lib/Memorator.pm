@@ -1,7 +1,7 @@
 package Memorator;
 use strict;
 use warnings;
-{ our $VERSION = '0.004'; }
+{ our $VERSION = '0.005001'; }
 
 use Memorator::Util ();
 use Module::Runtime qw< use_module >;

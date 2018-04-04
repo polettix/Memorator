@@ -31,6 +31,7 @@
       },
       "develop" : {
          "requires" : {
+            "DBD::SQLite" : "1.58",
             "Dist::Milla" : "v1.0.18",
             "Minion::Backend::SQLite" : "3.003",
             "Mojo::SQLite" : "3.000",
@@ -54,7 +55,7 @@
          }
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/polettix/Memorator/issues"
@@ -66,7 +67,7 @@
          "web" : "https://github.com/polettix/Memorator"
       }
    },
-   "version" : "0.004",
+   "version" : "0.005001",
    "x_contributors" : [
       "Flavio Poletti <flavio@polettix.it>"
    ],
